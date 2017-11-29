@@ -26,7 +26,7 @@ master 节点与 node 节点上的 Pods 通过 Pod 网络通信，所以需要�
 本文档用到的变量定义如下：
 
 ``` bash
-$ export MASTER_IP=10.64.3.7  # 替换为当前部署的 master 机器 IP
+$ export MASTER_IP=127.0.0.1  # 替换为当前部署的 master 机器 IP
 $ # 导入用到的其它全局变量：SERVICE_CIDR、CLUSTER_CIDR、NODE_PORT_RANGE、ETCD_ENDPOINTS、BOOTSTRAP_TOKEN
 $ source /root/local/bin/environment.sh
 $
@@ -158,7 +158,9 @@ ExecStart=/root/local/bin/kube-apiserver \\
   --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
   --advertise-address=${MASTER_IP} \\
   --bind-address=${MASTER_IP} \\
-  --insecure-bind-address=${MASTER_IP} \\
+  --insecure-bind-address=${NODE_IP} \\
+  --insecure-port=8888 \\
+  --secure-port=6666 \\
   --authorization-mode=RBAC \\
   --runtime-config=rbac.authorization.k8s.io/v1alpha1 \\
   --kubelet-https=true \\
@@ -231,7 +233,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-controller-manager \\
   --address=127.0.0.1 \\
-  --master=http://${MASTER_IP}:8080 \\
+  --master=http://${MASTER_IP}:6666 \\
   --allocate-node-cidrs=true \\
   --service-cluster-ip-range=${SERVICE_CIDR} \\
   --cluster-cidr=${CLUSTER_CIDR} \\
@@ -293,7 +295,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-scheduler \\
   --address=127.0.0.1 \\
-  --master=http://${MASTER_IP}:8080 \\
+  --master=http://${MASTER_IP}:6666 \\
   --leader-elect=true \\
   --v=2
 Restart=on-failure

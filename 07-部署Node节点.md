@@ -17,8 +17,9 @@ kubernetes Node 节点包含如下组件：
 
 ``` bash
 $ # 替换为 kubernetes master 集群任一机器 IP
-$ export MASTER_IP=10.64.3.7
-$ export KUBE_APISERVER="https://${MASTER_IP}:6443"
+$ export MASTER_IP=127.0.0.1
+$ export KUBE_APISERVER="https://${MASTER_IP}:6666"
+$ export NGINX_KUBE_APISERVER=https://${MASTER_IP}:6444
 $ # 当前部署的节点 IP
 $ export NODE_IP=10.64.3.7
 $ # 导入用到的其它全局变量：ETCD_ENDPOINTS、FLANNEL_ETCD_PREFIX、CLUSTER_CIDR、CLUSTER_DNS_SVC_IP、CLUSTER_DNS_DOMAIN、SERVICE_CIDR
@@ -149,7 +150,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=${KUBE_APISERVER} \
+  --server=${NGINX_KUBE_APISERVER} \
   --kubeconfig=bootstrap.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kubelet-bootstrap \
@@ -185,9 +186,8 @@ ExecStart=/root/local/bin/kubelet \\
   --address=${NODE_IP} \\
   --hostname-override=${NODE_IP} \\
   --pod-infra-container-image=registry.access.redhat.com/rhel7/pod-infrastructure:latest \\
-  --experimental-bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \\
+  --bootstrap-kubeconfig=/etc/kubernetes/bootstrap.kubeconfig \\
   --kubeconfig=/etc/kubernetes/kubelet.kubeconfig \\
-  --require-kubeconfig \\
   --cert-dir=/etc/kubernetes/ssl \\
   --cluster-dns=${CLUSTER_DNS_SVC_IP} \\
   --cluster-domain=${CLUSTER_DNS_DOMAIN} \\
@@ -317,7 +317,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=${KUBE_APISERVER} \
+  --server=${NGINX_KUBE_APISERVER} \
   --kubeconfig=kube-proxy.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kube-proxy \

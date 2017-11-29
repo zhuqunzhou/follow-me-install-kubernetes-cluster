@@ -20,8 +20,8 @@ The connection to the server localhost:8080 was refused - did you specify the ri
 本文档用到的变量定义如下：
 
 ``` bash
-$ export MASTER_IP=10.64.3.7 # 替换为 kubernetes master 集群任一机器 IP
-$ export KUBE_APISERVER="https://${MASTER_IP}:6443"
+$ export MASTER_IP=127.0.0.1 # 替换为 kubernetes master 集群任一机器 IP
+$ export KUBE_APISERVER="https://${MASTER_IP}:6666"
 $
 ```
 
