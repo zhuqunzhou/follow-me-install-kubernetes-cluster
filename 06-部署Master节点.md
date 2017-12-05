@@ -156,8 +156,8 @@ After=network.target
 [Service]
 ExecStart=/root/local/bin/kube-apiserver \\
   --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
-  --advertise-address=${MASTER_IP} \\
-  --bind-address=${MASTER_IP} \\
+  --advertise-address=${NODE_IP} \\
+  --bind-address=${NODE_IP} \\
   --insecure-bind-address=${NODE_IP} \\
   --insecure-port=8888 \\
   --secure-port=6666 \\
@@ -233,7 +233,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-controller-manager \\
   --address=127.0.0.1 \\
-  --master=http://${MASTER_IP}:6666 \\
+  --master=http://127.0.0.1:6443 \\
   --allocate-node-cidrs=true \\
   --service-cluster-ip-range=${SERVICE_CIDR} \\
   --cluster-cidr=${CLUSTER_CIDR} \\
@@ -263,7 +263,7 @@ EOF
 
     参考：https://github.com/kubernetes-incubator/bootkube/issues/64
 
-+ `--master=http://{MASTER_IP}:8080`：使用非安全 8080 端口与 kube-apiserver 通信；
++ `--master=http://{MASTER_IP}:8888`：使用非安全 8888 端口与 kube-apiserver 通信；
 + `--cluster-cidr` 指定 Cluster 中 Pod 的 CIDR 范围，该网段在各 Node 间必须路由可达(flanneld保证)；
 + `--service-cluster-ip-range` 参数指定 Cluster 中 Service 的CIDR范围，该网络在各 Node 间必须路由不可达，必须和 kube-apiserver 中的参数一致；
 + `--cluster-signing-*` 指定的证书和私钥文件用来签名为 TLS BootStrap 创建的证书和私钥；
@@ -295,7 +295,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-scheduler \\
   --address=127.0.0.1 \\
-  --master=http://${MASTER_IP}:6666 \\
+  --master=http://127.0.0.1:6443 \\
   --leader-elect=true \\
   --v=2
 Restart=on-failure
@@ -307,7 +307,7 @@ EOF
 ```
 
 + `--address` 值必须为 `127.0.0.1`，因为当前 kube-apiserver 期望 scheduler 和 controller-manager 在同一台机器；
-+ `--master=http://{MASTER_IP}:8080`：使用非安全 8080 端口与 kube-apiserver 通信；
++ `--master=http://{MASTER_IP}:8888`：使用非安全 8888 端口与 kube-apiserver 通信；
 + `--leader-elect=true` 部署多台机器组成的 master 集群时选举产生一处于工作状态的 `kube-controller-manager` 进程；
 
 完整 unit 见 [kube-scheduler.service](https://github.com/opsnull/follow-me-install-kubernetes-cluster/blob/master/systemd/kube-scheduler.service)。

@@ -101,6 +101,8 @@ WantedBy=multi-user.target
 ### 启动 dockerd
 
 ``` bash
+$ iptables-save -h
+$ iptables-save  > /etc/sysconfig/iptables
 $ sudo cp docker.service /etc/systemd/system/docker.service
 $ sudo systemctl daemon-reload
 $ sudo systemctl stop firewalld
@@ -150,7 +152,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=${NGINX_KUBE_APISERVER} \
+  --server=http://${NODE_IP}:6443 \
   --kubeconfig=bootstrap.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kubelet-bootstrap \
@@ -164,6 +166,7 @@ $ kubectl config set-context default \
 $ # 设置默认上下文
 $ kubectl config use-context default --kubeconfig=bootstrap.kubeconfig
 $ mv bootstrap.kubeconfig /etc/kubernetes/
+$ cp ~/.kube/config /etc/kubernetes/kubelet.kubeconfig
 ```
 
 + `--embed-certs` 为 `true` 时表示将 `certificate-authority` 证书写入到生成的 `bootstrap.kubeconfig` 文件中；
@@ -224,7 +227,7 @@ EOF
 $ sudo cp kubelet.service /etc/systemd/system/kubelet.service
 $ sudo systemctl daemon-reload
 $ sudo systemctl enable kubelet
-$ sudo systemctl start kubelet
+$ sudo systemctl restart kubelet
 $ systemctl status kubelet
 $
 ```
@@ -317,7 +320,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=${NGINX_KUBE_APISERVER} \
+  --server=http://${NODE_IP}:6443 \
   --kubeconfig=kube-proxy.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kube-proxy \
@@ -380,7 +383,7 @@ EOF
 $ sudo cp kube-proxy.service /etc/systemd/system/
 $ sudo systemctl daemon-reload
 $ sudo systemctl enable kube-proxy
-$ sudo systemctl start kube-proxy
+$ sudo systemctl restart kube-proxy
 $ systemctl status kube-proxy
 $
 ```
