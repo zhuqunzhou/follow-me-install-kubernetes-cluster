@@ -55,6 +55,7 @@ Documentation=http://docs.docker.io
 Environment="PATH=/root/local/bin:/bin:/sbin:/usr/bin:/usr/sbin"
 EnvironmentFile=-/run/flannel/docker
 ExecStart=/root/local/bin/dockerd --log-level=error $DOCKER_NETWORK_OPTIONS
+ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5
@@ -73,18 +74,6 @@ WantedBy=multi-user.target
 + 如果指定了多个 `EnvironmentFile` 选项，则必须将 `/run/flannel/docker` 放在最后(确保 docker0 使用 flanneld 生成的 bip 参数)；
 + 不能关闭默认开启的 `--iptables` 和 `--ip-masq` 选项；
 + 如果内核版本比较新，建议使用 `overlay` 存储驱动；
-+ docker 从 1.13 版本开始，可能将 **iptables FORWARD chain的默认策略设置为DROP**，从而导致 ping 其它 Node 上的 Pod IP 失败，遇到这种情况时，需要手动设置策略为 `ACCEPT`：
-
-  ``` bash
-  $ sudo iptables -P FORWARD ACCEPT
-  $
-  ```
-  并且把以下命令写入/etc/rc.local文件中，防止节点重启**iptables FORWARD chain的默认策略又还原为DROP**
-  
-  ``` bash
-  sleep 60 && /sbin/iptables -P FORWARD ACCEPT
-  ```
-
 
 + 为了加快 pull image 的速度，可以使用国内的仓库镜像服务器，同时增加下载的并发数。(如果 dockerd 已经运行，则需要重启 dockerd 生效。)
 
