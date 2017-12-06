@@ -90,8 +90,6 @@ WantedBy=multi-user.target
 ### 启动 dockerd
 
 ``` bash
-$ iptables-save -h
-$ iptables-save  > /etc/sysconfig/iptables
 $ sudo cp docker.service /etc/systemd/system/docker.service
 $ sudo systemctl daemon-reload
 $ sudo systemctl stop firewalld
