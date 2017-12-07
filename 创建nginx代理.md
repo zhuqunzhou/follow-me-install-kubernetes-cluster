@@ -27,9 +27,10 @@ stream {
     }
 }
 EOF
-```
 
 chmod +r /etc/nginx/nginx.conf
+```
+
 
 ``` bash
 cat << EOF >> /etc/systemd/system/nginx-proxy.service
