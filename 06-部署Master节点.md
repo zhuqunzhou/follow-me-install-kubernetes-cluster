@@ -158,7 +158,7 @@ ExecStart=/root/local/bin/kube-apiserver \\
   --admission-control=NamespaceLifecycle,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
   --advertise-address=${NODE_IP} \\
   --bind-address=${NODE_IP} \\
-  --insecure-bind-address=${NODE_IP} \\
+  --insecure-bind-address=127.0.0.1 \\
   --insecure-port=8888 \\
   --secure-port=6666 \\
   --authorization-mode=RBAC \\
@@ -233,7 +233,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-controller-manager \\
   --address=127.0.0.1 \\
-  --master=http://127.0.0.1:6443 \\
+  --master=http://127.0.0.1:8888 \\
   --allocate-node-cidrs=true \\
   --service-cluster-ip-range=${SERVICE_CIDR} \\
   --cluster-cidr=${CLUSTER_CIDR} \\
@@ -295,7 +295,7 @@ Documentation=https://github.com/GoogleCloudPlatform/kubernetes
 [Service]
 ExecStart=/root/local/bin/kube-scheduler \\
   --address=127.0.0.1 \\
-  --master=http://127.0.0.1:6443 \\
+  --master=http://127.0.0.1:8888 \\
   --leader-elect=true \\
   --v=2
 Restart=on-failure

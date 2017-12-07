@@ -139,7 +139,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=http://${NODE_IP}:6443 \
+  --server=https://127.0.0.1:6443 \
   --kubeconfig=bootstrap.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kubelet-bootstrap \
@@ -307,7 +307,7 @@ $ # 设置集群参数
 $ kubectl config set-cluster kubernetes \
   --certificate-authority=/etc/kubernetes/ssl/ca.pem \
   --embed-certs=true \
-  --server=http://${NODE_IP}:6443 \
+  --server=https://127.0.0.1:6443 \
   --kubeconfig=kube-proxy.kubeconfig
 $ # 设置客户端认证参数
 $ kubectl config set-credentials kube-proxy \

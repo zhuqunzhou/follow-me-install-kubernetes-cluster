@@ -129,7 +129,7 @@ EOF
 $ sudo cp flanneld.service /etc/systemd/system/
 $ sudo systemctl daemon-reload
 $ sudo systemctl enable flanneld
-$ sudo systemctl start flanneld
+$ sudo systemctl restart flanneld
 $ systemctl status flanneld
 $
 ```

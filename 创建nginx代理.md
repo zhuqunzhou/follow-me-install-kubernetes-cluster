@@ -14,9 +14,9 @@ events {
 stream {
     upstream kube_apiserver {
         least_conn;
-        server 10.100.158.144:8888;
-        server 10.100.158.145:8888;
-        server 10.100.158.146:8888;
+        server 10.100.158.144:6666;
+        server 10.100.158.145:6666;
+        server 10.100.158.146:6666;
     }
 
     server {
